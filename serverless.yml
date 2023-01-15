@@ -69,5 +69,5 @@ functions:
         handler: src/infrastructure/lambdas/FindRoomByFilters.handler
         events:
             - http:
-                  path: /filters
+                  path: /search
                   method: get
