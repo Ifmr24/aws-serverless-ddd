@@ -1,0 +1,73 @@
+service: he-sls
+
+custom:
+    esbuild:
+        bundle: true
+        minify: false
+        sourcemap: true
+        exclude: ["aws-sdk"]
+        target: "node16"
+        platform: "node"
+        concurrency: 10
+
+provider:
+    name: aws
+    runtime: nodejs16.x
+    region: us-east-1
+    stage: ${opt:stage,'dev'}
+    apiGateway:
+        minimumCompressionSize: 1024
+        shouldStartNameWithService: true
+    environment:
+        STAGE: ${self:provider.stage}
+        AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+        NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000"
+    iam:
+        role:
+            statements:
+                - Effect: Allow
+                  Action:
+                      - "sqs:*"
+                  Resource: "*"
+
+plugins:
+    - serverless-esbuild
+
+package:
+    individually: true
+
+functions:
+    CreateRoom:
+        handler: src/infrastructure/routes/rooms.CreateRoom
+        events:
+            - http:
+                  path: /
+                  method: post
+
+    UpdateRoom:
+        handler: src/infrastructure/routes/rooms.UpdateRoom
+        events:
+            - http:
+                  path: /
+                  method: put
+
+    DeleteRoom:
+        handler: src/infrastructure/routes/rooms.DeleteRoom
+        events:
+            - http:
+                  path: /{id}
+                  method: delete
+
+    FindRoomById:
+        handler: src/infrastructure/routes/rooms.FindRoomById
+        events:
+            - http:
+                  path: /{id}
+                  method: get
+
+    FindRoomByFilters:
+        handler: src/infrastructure/routes/rooms.FindRoomByFilters
+        events:
+            - http:
+                  path: /filters
+                  method: get
