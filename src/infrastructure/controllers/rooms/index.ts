@@ -15,8 +15,8 @@ export class RoomController {
         const room = await this.roomUseCases.delete(_id);
         return room;
     };
-    public findByFilters = async ({ body }) => {
-        const rooms = await this.roomUseCases.findByFilters(body);
+    public findByFilters = async ({ filters }) => {
+        const rooms = await this.roomUseCases.findByFilters(filters);
         return rooms;
     };
     public findById = async ({ _id }: { _id: any }) => {
