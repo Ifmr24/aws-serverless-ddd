@@ -1,3 +1,4 @@
+import { Filters } from "./../interfaces/Filters";
 import { RoomRepository } from "../../domain/room.repository";
 import { RoomEntity } from "../../domain/room.entity";
 
@@ -28,7 +29,11 @@ export class MockRepository implements RoomRepository {
         return id;
     }
 
-    async findByFilters(filters: any): Promise<RoomEntity[]> {
+    async findByFilters(filters: Filters): Promise<RoomEntity[]> {
+        console.log({ filters });
+        if (filters?.name) {
+            return mockRooms.filter((r) => r.name === filters.name);
+        }
         return mockRooms;
     }
 
